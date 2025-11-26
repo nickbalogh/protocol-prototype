@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Site Network - Verily Digital Protocol</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Network-specific styles */
+        .sites-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .site-card {
+            background: white;
+            border: 1px solid var(--verily-border);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .site-card:hover {
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+            transform: translateY(-2px);
+        }
+
+        .site-card-header {
+            margin-bottom: 16px;
+        }
+
+        .site-card-name {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: var(--verily-secondary);
+            margin-bottom: 4px;
+        }
+
+        .site-card-location {
+            font-size: 0.9em;
+            color: #888;
+        }
+
+        .site-card-specialties {
+            margin-bottom: 16px;
+        }
+
+        .site-card-specialties-label {
+            font-size: 0.85em;
+            color: #888;
+            margin-bottom: 8px;
+        }
+
+        .specialty-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .specialty-tag {
+            padding: 4px 10px;
+            background: rgba(10, 122, 107, 0.1);
+            color: var(--verily-primary);
+            border-radius: 12px;
+            font-size: 0.75em;
+            font-weight: 500;
+        }
+
+        .site-card-metrics {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            padding-top: 16px;
+            border-top: 1px solid var(--verily-border);
+        }
+
+        .site-metric {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .site-metric-label {
+            font-size: 0.75em;
+            color: #888;
+            margin-bottom: 4px;
+        }
+
+        .site-metric-value {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: var(--verily-secondary);
+        }
+
+        .site-card-capabilities-count {
+            font-size: 0.85em;
+            color: #888;
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <div class="nav-bar">
+        <div class="nav-left">
+            <div class="nav-logo">verily</div>
+            <div class="nav-title">Protocol Insights</div>
+        </div>
+        <div class="nav-right">
+            <div class="user-profile">
+                <div class="user-avatar">SM</div>
+                <div class="user-info">
+                    <div class="user-name">Sarah Martinez</div>
+                    <div class="user-org">Metro Medical Center</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="welcome-section">
+        <h1 class="welcome-title">Clinical Research Network</h1>
+    </div>
+
+    <!-- Sites Section -->
+    <div class="protocols-section">
+        <div class="protocols-header">
+            <h2 class="protocols-title">Sites</h2>
+            <div class="protocols-controls">
+                <div class="search-box">
+                    <svg class="search-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                    </svg>
+                    <input type="text" class="search-input" id="siteSearch" placeholder="Search sites">
+                </div>
+                <select class="filter-select" id="specialtyFilter">
+                    <option value="">Specialty</option>
+                </select>
+                <select class="filter-select" id="capabilityFilter">
+                    <option value="">Capability</option>
+                </select>
+            </div>
+        </div>
+        <div class="sites-grid" id="sitesGrid">
+            <!-- Site cards will be rendered here -->
+        </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script>
+        let allSites = [];
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            allSites = ProtocolData.sites;
+            initializeFilters();
+            renderSites();
+            setupEventListeners();
+        });
+
+        function initializeFilters() {
+            // Get all unique specialties
+            const specialties = [...new Set(ProtocolData.sites.flatMap(site => site.specialties))].sort();
+            const specialtyFilter = document.getElementById('specialtyFilter');
+            specialties.forEach(specialty => {
+                const option = document.createElement('option');
+                option.value = specialty;
+                option.textContent = specialty;
+                specialtyFilter.appendChild(option);
+            });
+
+            // Get all unique capabilities
+            const capabilities = [...new Set(ProtocolData.sites.flatMap(site => site.capabilities))].sort();
+            const capabilityFilter = document.getElementById('capabilityFilter');
+            capabilities.forEach(capability => {
+                const option = document.createElement('option');
+                option.value = capability;
+                option.textContent = capability;
+                capabilityFilter.appendChild(option);
+            });
+        }
+
+        function setupEventListeners() {
+            document.getElementById('siteSearch').addEventListener('input', filterSites);
+            document.getElementById('specialtyFilter').addEventListener('change', filterSites);
+            document.getElementById('capabilityFilter').addEventListener('change', filterSites);
+        }
+
+        function filterSites() {
+            const searchTerm = document.getElementById('siteSearch').value.toLowerCase();
+            const specialtyFilter = document.getElementById('specialtyFilter').value;
+            const capabilityFilter = document.getElementById('capabilityFilter').value;
+
+            const filteredSites = allSites.filter(site => {
+                const matchesSearch = !searchTerm || 
+                    site.name.toLowerCase().includes(searchTerm) ||
+                    site.location.toLowerCase().includes(searchTerm);
+                
+                const matchesSpecialty = !specialtyFilter || 
+                    site.specialties.includes(specialtyFilter);
+                
+                const matchesCapability = !capabilityFilter || 
+                    site.capabilities.includes(capabilityFilter);
+
+                return matchesSearch && matchesSpecialty && matchesCapability;
+            });
+
+            renderSites(filteredSites);
+        }
+
+        function renderSites(sites = allSites) {
+            const container = document.getElementById('sitesGrid');
+            if (!container || !window.ProtocolData) {
+                console.error('Container or ProtocolData not found');
+                return;
+            }
+
+            if (sites.length === 0) {
+                container.innerHTML = '<p style="color: #888; grid-column: 1 / -1;">No sites found matching your criteria</p>';
+                return;
+            }
+
+            container.innerHTML = sites.map(site => {
+                const performance = site.pastPerformance;
+                
+                return `
+                    <div class="site-card" onclick="window.location.href='site.html?id=${site.id}'">
+                        <div class="site-card-header">
+                            <div class="site-card-name">${site.name}</div>
+                            <div class="site-card-location">${site.location}</div>
+                        </div>
+                        <div class="site-card-specialties">
+                            <div class="site-card-specialties-label">Specialties</div>
+                            <div class="specialty-tags">
+                                ${site.specialties.map(spec => `<span class="specialty-tag">${spec}</span>`).join('')}
+                            </div>
+                        </div>
+                        <div class="site-card-metrics">
+                            <div class="site-metric">
+                                <div class="site-metric-label">Enrollment Rate</div>
+                                <div class="site-metric-value">${performance.enrollmentRate}%</div>
+                            </div>
+                            <div class="site-metric">
+                                <div class="site-metric-label">Retention Rate</div>
+                                <div class="site-metric-value">${performance.retentionRate}%</div>
+                            </div>
+                            <div class="site-metric">
+                                <div class="site-metric-label">Compliance</div>
+                                <div class="site-metric-value">${performance.protocolCompliance}%</div>
+                            </div>
+                            <div class="site-metric">
+                                <div class="site-metric-label">Time to First Patient</div>
+                                <div class="site-metric-value">${performance.averageTimeToFirstPatient} days</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+    </script>
+</body>
+</html>
+

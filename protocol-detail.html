@@ -1,0 +1,1480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protocol Detail - Verily Protocol Insights</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Protocol Detail Specific Styles */
+        .detail-nav-bar {
+            background: white;
+            border-bottom: 1px solid var(--verily-border);
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .detail-nav-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .back-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            color: var(--verily-text);
+            font-weight: 500;
+        }
+
+        .back-link:hover {
+            color: var(--verily-primary);
+        }
+
+        .detail-nav-right {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .btn-status-completed {
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: none;
+            font-size: 0.85em;
+            font-weight: 600;
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--verily-success);
+            cursor: pointer;
+        }
+
+        .btn-export {
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: 1px solid var(--verily-border);
+            background: white;
+            font-size: 0.85em;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .protocol-header {
+            padding: 40px;
+            background: white;
+        }
+
+        .protocol-header-id {
+            font-size: 1.5em;
+            font-weight: 600;
+            color: var(--verily-secondary);
+            margin-bottom: 8px;
+        }
+
+        .protocol-header-title {
+            font-size: 1.8em;
+            font-weight: 600;
+            color: var(--verily-secondary);
+            margin-bottom: 8px;
+        }
+
+        .protocol-header-version {
+            font-size: 1em;
+            color: #888;
+        }
+
+        .overview-metrics {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            padding: 0 40px 40px 40px;
+        }
+
+        .overview-metric-card {
+            background: white;
+            border: 1px solid var(--verily-border);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        .overview-metric-label {
+            font-size: 0.9em;
+            color: #888;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .overview-metric-value {
+            font-size: 2.5em;
+            font-weight: 600;
+            color: var(--verily-secondary);
+            margin-bottom: 8px;
+        }
+
+        .overview-metric-comparison {
+            font-size: 0.85em;
+            color: #888;
+            margin-bottom: 12px;
+        }
+
+        .overview-metric-trend {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .trend-up {
+            color: var(--verily-success);
+        }
+
+        .trend-down {
+            color: var(--verily-danger);
+        }
+
+        .metric-section {
+            background: white;
+            border: 1px solid var(--verily-border);
+            border-radius: 12px;
+            padding: 32px;
+            margin: 0 40px 24px 40px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        .metric-section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .metric-section-title {
+            font-size: 1.5em;
+            font-weight: 600;
+            color: var(--verily-secondary);
+        }
+
+        .view-drivers-link {
+            color: var(--verily-primary);
+            font-size: 0.9em;
+            text-decoration: none;
+        }
+
+        .view-drivers-link:hover {
+            text-decoration: underline;
+        }
+
+        .metric-score-display {
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .metric-score-value {
+            font-size: 3em;
+            font-weight: 600;
+            color: var(--verily-secondary);
+        }
+
+        .metric-score-trend {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 1em;
+            font-weight: 600;
+        }
+
+        .driver-item {
+            padding: 20px;
+            margin-bottom: 16px;
+            background: var(--verily-neutral);
+            border-radius: 8px;
+            border-left: 4px solid var(--verily-primary);
+        }
+
+        .driver-name {
+            font-weight: 600;
+            color: var(--verily-secondary);
+            margin-bottom: 8px;
+            font-size: 1em;
+        }
+
+        .driver-description {
+            color: var(--verily-text);
+            line-height: 1.6;
+            font-size: 0.9em;
+        }
+
+        .amendment-risk-gauge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 32px 0;
+        }
+
+        .gauge-container {
+            position: relative;
+            width: 200px;
+            height: 200px;
+        }
+
+        .gauge-circle {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            border: 24px solid #e5e7eb;
+            border-top-color: var(--verily-danger);
+            border-right-color: var(--verily-danger);
+            border-bottom-color: transparent;
+            border-left-color: transparent;
+            transform: rotate(-45deg);
+            position: relative;
+        }
+
+        .gauge-value {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 4em;
+            font-weight: 600;
+            color: var(--verily-secondary);
+        }
+
+        .recommended-actions {
+            padding: 0 40px 40px 40px;
+        }
+
+        .recommended-actions-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .recommended-actions-title {
+            font-size: 1.5em;
+            font-weight: 600;
+            color: var(--verily-secondary);
+        }
+
+        .action-navigation {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .action-nav-arrow {
+            width: 32px;
+            height: 32px;
+            border: 1px solid var(--verily-border);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            background: white;
+        }
+
+        .action-nav-arrow:hover {
+            background: var(--verily-neutral);
+        }
+
+        .action-nav-arrow:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .action-cards-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+        }
+
+        .action-card {
+            background: white;
+            border: 1px solid var(--verily-border);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        .action-card-title {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: var(--verily-secondary);
+            margin-bottom: 12px;
+        }
+
+        .action-card-description {
+            color: var(--verily-text);
+            line-height: 1.6;
+            font-size: 0.9em;
+        }
+
+        .footer-info {
+            padding: 24px 40px;
+            border-top: 1px solid var(--verily-border);
+            background: white;
+            font-size: 0.85em;
+            color: #888;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Tabs for protocol detail */
+        .detail-tab-container {
+            border-bottom: 1px solid var(--verily-border);
+            margin: 0 40px 24px 40px;
+            padding: 0;
+        }
+
+        .detail-tabs {
+            display: flex;
+            gap: 0;
+        }
+
+        .detail-tab {
+            padding: 16px 24px;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            font-size: 0.95em;
+            font-weight: 500;
+            color: var(--verily-text);
+            transition: all 0.2s ease;
+        }
+
+        .detail-tab:hover {
+            color: var(--verily-primary);
+        }
+
+        .detail-tab.active {
+            color: var(--verily-primary);
+            border-bottom-color: var(--verily-primary);
+        }
+
+        .detail-tab-content {
+            display: none;
+            padding: 0 0 40px 0;
+        }
+
+        .detail-tab-content .overview-section {
+            padding-left: 0;
+            padding-right: 0;
+        }
+
+        .detail-tab-content .protocols-section {
+            padding-left: 0;
+            padding-right: 0;
+            margin-left: 40px;
+            margin-right: 40px;
+        }
+
+        .detail-tab-content.active {
+            display: block;
+        }
+
+        .version-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .version-item {
+            background: white;
+            border: 1px solid var(--verily-border);
+            border-radius: 8px;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .version-info {
+            flex: 1;
+        }
+
+        .version-number {
+            font-weight: 600;
+            color: var(--verily-secondary);
+            margin-bottom: 4px;
+        }
+
+        .version-date {
+            font-size: 0.85em;
+            color: #888;
+            margin-bottom: 8px;
+        }
+
+        .version-status {
+            margin-top: 8px;
+        }
+
+        .version-metrics {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+
+        .version-metric {
+            text-align: center;
+            min-width: 80px;
+        }
+
+        .version-metric-label {
+            font-size: 0.75em;
+            color: #888;
+            margin-bottom: 4px;
+        }
+
+        .version-metric-value {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: var(--verily-secondary);
+        }
+
+        /* Site Matching Styles */
+        .site-leaderboard {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .site-match-card {
+            background: white;
+            border: 1px solid var(--verily-border);
+            border-radius: 12px;
+            padding: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s ease;
+        }
+
+        .site-match-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .site-match-info {
+            flex: 1;
+        }
+
+        .site-match-name {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: var(--verily-secondary);
+            margin-bottom: 4px;
+        }
+
+        .site-match-location {
+            font-size: 0.9em;
+            color: #888;
+            margin-bottom: 8px;
+        }
+
+        .site-match-details {
+            font-size: 0.85em;
+            color: var(--verily-text);
+        }
+
+        .site-match-score {
+            text-align: center;
+            margin-right: 24px;
+        }
+
+        .match-score-value {
+            font-size: 2em;
+            font-weight: 600;
+            color: var(--verily-primary);
+            margin-bottom: 4px;
+        }
+
+        .match-score-label {
+            font-size: 0.85em;
+            color: #888;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .btn-loading {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        /* Upload Section */
+        .upload-section {
+            background: white;
+            border: 1px solid var(--verily-border);
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .upload-area {
+            border: 2px dashed var(--verily-border);
+            border-radius: 8px;
+            padding: 48px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .upload-area:hover {
+            border-color: var(--verily-primary);
+            background: rgba(10, 122, 107, 0.02);
+        }
+
+        .upload-area.dragover {
+            border-color: var(--verily-primary);
+            background: rgba(10, 122, 107, 0.05);
+        }
+
+        .upload-icon {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 16px;
+            opacity: 0.5;
+        }
+
+        .upload-text {
+            font-size: 1.1em;
+            color: var(--verily-secondary);
+            margin-bottom: 8px;
+        }
+
+        .upload-hint {
+            font-size: 0.9em;
+            color: #888;
+        }
+
+        /* Pipeline Visualization */
+        .pipeline {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 40px 0;
+            position: relative;
+        }
+
+        .pipeline::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--verily-border);
+            z-index: 0;
+        }
+
+        .pipeline-step {
+            background: white;
+            border: 2px solid var(--verily-border);
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 1;
+            transition: all 0.3s ease;
+        }
+
+        .pipeline-step.active {
+            border-color: var(--verily-primary);
+            background: var(--verily-primary);
+            color: white;
+        }
+
+        .pipeline-step.completed {
+            border-color: var(--verily-success);
+            background: var(--verily-success);
+            color: white;
+        }
+
+        .pipeline-step-label {
+            position: absolute;
+            top: 100%;
+            margin-top: 12px;
+            font-size: 0.85em;
+            color: var(--verily-text);
+            white-space: nowrap;
+        }
+
+        .pipeline-step.active .pipeline-step-label {
+            color: var(--verily-primary);
+            font-weight: 600;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .modal-title {
+            font-size: 1.5em;
+            font-weight: 600;
+            color: var(--verily-secondary);
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            cursor: pointer;
+            opacity: 0.6;
+        }
+
+        .modal-close:hover {
+            opacity: 1;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: var(--verily-success);
+            color: white;
+            padding: 16px 24px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            display: none;
+            z-index: 2000;
+            animation: slideIn 0.3s ease;
+        }
+
+        .toast.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 1200px) {
+            .overview-metrics {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .action-cards-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .overview-metrics {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <div class="detail-nav-bar">
+        <div class="detail-nav-left">
+            <div class="nav-logo">verily</div>
+            <div class="nav-title">Protocol Insights</div>
+        </div>
+        <div class="detail-nav-right">
+            <button class="btn-export" onclick="showUploadModal()" style="background: var(--verily-primary); color: white; border-color: var(--verily-primary);">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="margin-right: 6px;">
+                    <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/>
+                </svg>
+                Upload New Version
+            </button>
+            <button class="btn-export" onclick="exportProtocol()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+                </svg>
+                Export
+            </button>
+            <button class="btn-export" onclick="sendToEDC()" style="background: var(--verily-accent); color: white; border-color: var(--verily-accent);">
+                Send to EDC
+            </button>
+            <div class="user-profile">
+                <div class="user-avatar">JD</div>
+                <div class="user-info">
+                    <div class="user-name">Jane Dawson</div>
+                    <div class="user-org">Lumen Industries</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Protocol Header -->
+    <div class="protocol-header">
+        <a href="sponsor.html" class="back-link">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+            </svg>
+            <span>Back to Protocols</span>
+        </a>
+        <div>
+            <div class="protocol-header-title" id="protocolHeaderTitle"></div>
+            <div class="protocol-header-version" id="protocolHeaderVersion"></div>
+        </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="detail-tab-container">
+        <div class="detail-tabs">
+            <button class="detail-tab active" onclick="switchDetailTab('overview')">Overview</button>
+            <button class="detail-tab" onclick="switchDetailTab('matching')">Potential Sites</button>
+            <button class="detail-tab" onclick="switchDetailTab('versions')">Version History</button>
+        </div>
+    </div>
+
+    <!-- Overview Tab -->
+    <div class="detail-tab-content active" id="overviewTab">
+    <!-- Overview Metrics -->
+    <div class="overview-metrics">
+        <div class="overview-metric-card">
+            <div class="overview-metric-label">Arms</div>
+            <div class="overview-metric-value" id="armsValue">-</div>
+            <div class="overview-metric-comparison" id="armsComparison"></div>
+            <div class="overview-metric-trend" id="armsTrend"></div>
+        </div>
+        <div class="overview-metric-card">
+            <div class="overview-metric-label">Visits</div>
+            <div class="overview-metric-value" id="visitsValue">-</div>
+            <div class="overview-metric-comparison" id="visitsComparison"></div>
+            <div class="overview-metric-trend" id="visitsTrend"></div>
+        </div>
+        <div class="overview-metric-card">
+            <div class="overview-metric-label">Activities</div>
+            <div class="overview-metric-value" id="activitiesValue">-</div>
+            <div class="overview-metric-comparison" id="activitiesComparison"></div>
+            <div class="overview-metric-trend" id="activitiesTrend"></div>
+        </div>
+        <div class="overview-metric-card">
+            <div class="overview-metric-label">Visit Activities</div>
+            <div class="overview-metric-value" id="visitActivitiesValue">-</div>
+            <div class="overview-metric-comparison" id="visitActivitiesComparison"></div>
+            <div class="overview-metric-trend" id="visitActivitiesTrend"></div>
+        </div>
+    </div>
+
+    <!-- Complexity Index Section -->
+    <div class="metric-section">
+        <div class="metric-section-header">
+            <div class="metric-section-title">Complexity Index</div>
+            <a href="#" class="view-drivers-link">View drivers in protocol ></a>
+        </div>
+        <div class="metric-score-display">
+            <div class="metric-score-value" id="complexityScore">-</div>
+            <div class="metric-score-trend" id="complexityTrend"></div>
+        </div>
+        <div class="metric-progress-container">
+            <div class="metric-progress-bar">
+                <div class="metric-progress-fill" id="complexityProgress">
+                    <div class="metric-progress-slider"></div>
+                </div>
+            </div>
+        </div>
+        <div style="margin-top: 32px;">
+            <div style="font-weight: 600; color: var(--verily-secondary); margin-bottom: 16px;">Top drivers:</div>
+            <div id="complexityDrivers"></div>
+        </div>
+    </div>
+
+    <!-- Patient Burden Score Section -->
+    <div class="metric-section">
+        <div class="metric-section-header">
+            <div class="metric-section-title">Patient Burden Score</div>
+            <a href="#" class="view-drivers-link">View drivers in protocol ></a>
+        </div>
+        <div class="metric-score-display">
+            <div class="metric-score-value" id="patientBurdenScore">-</div>
+            <div class="metric-score-trend" id="patientBurdenScoreTrend"></div>
+        </div>
+        <div class="metric-progress-container">
+            <div class="metric-progress-bar">
+                <div class="metric-progress-fill" id="patientBurdenScoreProgress">
+                    <div class="metric-progress-slider"></div>
+                </div>
+            </div>
+        </div>
+        <div style="margin-top: 32px;">
+            <div style="font-weight: 600; color: var(--verily-secondary); margin-bottom: 16px;">Top drivers:</div>
+            <div id="patientBurdenDrivers"></div>
+        </div>
+    </div>
+
+    <!-- Avoidable Amendment Risk Section -->
+    <div class="metric-section">
+        <div class="metric-section-header">
+            <div class="metric-section-title">Avoidable Amendment Risk</div>
+            <a href="#" class="view-drivers-link">View drivers in protocol ></a>
+        </div>
+        <div class="metric-score-display">
+            <div class="metric-score-trend" id="amendmentRiskTrend"></div>
+        </div>
+        <div class="amendment-risk-gauge">
+            <div class="gauge-container">
+                <div class="gauge-circle" id="amendmentGauge"></div>
+                <div class="gauge-value" id="amendmentRiskCount">-</div>
+            </div>
+        </div>
+        <div style="margin-top: 32px;">
+            <div style="font-weight: 600; color: var(--verily-secondary); margin-bottom: 16px;">Top drivers:</div>
+            <div id="amendmentRiskDrivers"></div>
+        </div>
+    </div>
+
+    <!-- Recommended Actions -->
+    <div class="recommended-actions">
+        <div class="recommended-actions-header">
+            <div class="recommended-actions-title" id="recommendedActionsTitle">Recommended Actions</div>
+            <div class="action-navigation">
+                <button class="action-nav-arrow" id="prevAction" onclick="changeAction(-1)">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                    </svg>
+                </button>
+                <span id="actionCounter">1/6</span>
+                <button class="action-nav-arrow" id="nextAction" onclick="changeAction(1)">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <div class="action-cards-container" id="actionCards"></div>
+    </div>
+    </div>
+
+    <!-- Version History Tab -->
+    <div class="detail-tab-content" id="versionsTab">
+        <div class="protocols-section">
+            <div class="version-list" id="versionList">
+                <!-- Versions will be rendered here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Potential Sites Tab -->
+    <div class="detail-tab-content" id="matchingTab">
+        <div class="protocols-section">
+            <div class="site-leaderboard" id="siteLeaderboard">
+                <!-- Site matches will be rendered here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Upload Modal -->
+    <div class="modal" id="uploadModal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <div class="modal-title">Upload New Version</div>
+                <svg class="modal-close" onclick="closeModal('uploadModal')" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                </svg>
+            </div>
+            <div class="upload-section" style="margin: 0;">
+                <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
+                    <svg class="upload-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/>
+                    </svg>
+                    <div class="upload-text">Click to upload or drag and drop</div>
+                    <div class="upload-hint">PDF Protocol Document (Max 10MB)</div>
+                </div>
+                <input type="file" id="fileInput" accept=".pdf" style="display: none;">
+            </div>
+
+            <!-- Pipeline Visualization -->
+            <div class="pipeline" id="pipeline" style="display: none; margin: 32px 0;">
+                <div class="pipeline-step" id="step1">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+                    </svg>
+                    <div class="pipeline-step-label">Ingestion</div>
+                </div>
+                <div class="pipeline-step" id="step2">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                    <div class="pipeline-step-label">LLM Extraction</div>
+                </div>
+                <div class="pipeline-step" id="step3">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
+                    </svg>
+                    <div class="pipeline-step-label">Analytics</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <div id="toastMessage"></div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer-info">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="opacity: 0.6;">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+        </svg>
+        <span>Scores and % are benchmarked against Verily's authorized digital protocol corpus (by TA/Phase)</span>
+    </div>
+
+    <script src="data.js"></script>
+    <script>
+        let currentProtocol = null;
+        let currentAnalytics = null;
+        let currentActionPage = 0;
+        const actionsPerPage = 2;
+
+        // Get protocol ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const protocolId = urlParams.get('id');
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            if (!protocolId) {
+                alert('No protocol ID provided');
+                window.location.href = 'sponsor.html';
+                return;
+            }
+
+            loadProtocol(protocolId);
+            setupUpload();
+        });
+
+        function loadProtocol(protocolId) {
+            currentProtocol = ProtocolData.protocols.find(p => p.id === protocolId);
+            if (!currentProtocol) {
+                alert('Protocol not found');
+                window.location.href = 'sponsor.html';
+                return;
+            }
+
+            // Find the latest version for this protocol
+            const versions = ProtocolData.versions.filter(v => v.protocolId === protocolId);
+            const version = versions.length > 0 ? versions[versions.length - 1] : null;
+            currentAnalytics = ProtocolData.protocolAnalytics[protocolId];
+
+            console.log('Loading protocol:', protocolId);
+            console.log('Version found:', version);
+            console.log('Analytics found:', currentAnalytics);
+
+            // Update header
+            document.getElementById('protocolHeaderTitle').textContent = currentProtocol.title;
+            if (version) {
+                document.getElementById('protocolHeaderVersion').textContent = `Version ${version.versionNumber} • ${currentProtocol.status}`;
+            } else {
+                document.getElementById('protocolHeaderVersion').textContent = `No version yet • ${currentProtocol.status}`;
+            }
+
+            // Update overview metrics
+            if (currentAnalytics) {
+                document.getElementById('armsValue').textContent = currentAnalytics.arms;
+                document.getElementById('armsComparison').textContent = `Median for same TA/Phase: ${currentAnalytics.armsMedian}`;
+                updateTrend('armsTrend', currentAnalytics.armsTrend);
+
+                document.getElementById('visitsValue').textContent = currentAnalytics.visits;
+                document.getElementById('visitsComparison').textContent = `Median for same TA/Phase: ${currentAnalytics.visitsMedian}`;
+                updateTrend('visitsTrend', currentAnalytics.visitsTrend);
+
+                document.getElementById('activitiesValue').textContent = currentAnalytics.activities;
+                document.getElementById('activitiesComparison').textContent = `Median for same TA/Phase: ${currentAnalytics.activitiesMedian}`;
+                updateTrend('activitiesTrend', currentAnalytics.activitiesTrend);
+
+                document.getElementById('visitActivitiesValue').textContent = currentAnalytics.visitActivities.toLocaleString();
+                document.getElementById('visitActivitiesComparison').textContent = `Median for same TA/Phase: ${currentAnalytics.visitActivitiesMedian.toLocaleString()}`;
+                updateTrend('visitActivitiesTrend', currentAnalytics.visitActivitiesTrend);
+            }
+
+            // Update complexity index
+            if (version) {
+                document.getElementById('complexityScore').textContent = `${version.complexityScore}/100`;
+                document.getElementById('complexityProgress').style.width = `${version.complexityScore}%`;
+                if (currentAnalytics) {
+                    updateTrend('complexityTrend', currentAnalytics.complexityTrend);
+                }
+            }
+
+            // Update patient burden
+            if (version && version.patientBurdenScore !== undefined) {
+                const patientBurdenScoreEl = document.getElementById('patientBurdenScore');
+                const patientBurdenScoreProgressEl = document.getElementById('patientBurdenScoreProgress');
+                if (patientBurdenScoreEl) {
+                    patientBurdenScoreEl.textContent = `${version.patientBurdenScore}/100`;
+                }
+                if (patientBurdenScoreProgressEl) {
+                    patientBurdenScoreProgressEl.style.width = `${version.patientBurdenScore}%`;
+                }
+                if (currentAnalytics && currentAnalytics.patientBurdenTrend !== undefined) {
+                    updateTrend('patientBurdenScoreTrend', currentAnalytics.patientBurdenTrend);
+                }
+            } else {
+                console.warn('No version or patient burden score found for protocol:', protocolId);
+            }
+
+            // Update amendment risk
+            if (currentAnalytics) {
+                const amendmentRiskTrendEl = document.getElementById('amendmentRiskTrend');
+                const amendmentRiskCountEl = document.getElementById('amendmentRiskCount');
+                const amendmentGaugeEl = document.getElementById('amendmentGauge');
+                
+                if (amendmentRiskTrendEl && currentAnalytics.amendmentRiskTrend !== undefined) {
+                    updateTrend('amendmentRiskTrend', currentAnalytics.amendmentRiskTrend);
+                }
+                if (amendmentRiskCountEl && currentAnalytics.amendmentRiskCount !== undefined) {
+                    amendmentRiskCountEl.textContent = currentAnalytics.amendmentRiskCount;
+                }
+                if (amendmentGaugeEl && currentAnalytics.amendmentRiskCount !== undefined) {
+                    updateGauge(currentAnalytics.amendmentRiskCount);
+                }
+            } else {
+                console.warn('No analytics data found for protocol:', protocolId);
+            }
+
+            // Render drivers
+            if (currentAnalytics) {
+                renderDrivers('complexityDrivers', currentAnalytics.complexityDrivers);
+                renderDrivers('patientBurdenDrivers', currentAnalytics.patientBurdenDrivers);
+                renderDrivers('amendmentRiskDrivers', currentAnalytics.amendmentRiskDrivers);
+                renderRecommendedActions();
+            }
+        }
+
+        function updateTrend(elementId, trend) {
+            const element = document.getElementById(elementId);
+            if (!element) {
+                console.warn('Element not found:', elementId);
+                return;
+            }
+            if (trend === undefined || trend === null) {
+                console.warn('Trend value is undefined for:', elementId);
+                return;
+            }
+            const isPositive = trend > 0;
+            const color = isPositive ? 'var(--verily-success)' : 'var(--verily-danger)';
+            const arrow = isPositive ? '↑' : '↓';
+            element.innerHTML = `<span style="color: ${color}">${arrow}</span><span style="color: ${color}">${Math.abs(trend)}%</span>`;
+            element.className = `metric-score-trend ${isPositive ? 'trend-up' : 'trend-down'}`;
+        }
+
+        function updateGauge(count) {
+            if (count === undefined || count === null) {
+                console.warn('Gauge count is undefined');
+                return;
+            }
+            const maxCount = 10; // Assume max of 10 for visualization
+            const percentage = Math.min((count / maxCount) * 100, 100);
+            const gauge = document.getElementById('amendmentGauge');
+            if (!gauge) {
+                console.warn('Amendment gauge element not found');
+                return;
+            }
+            // 270 degrees for 3/4 circle (top to right), starting rotation at -45deg
+            const degrees = (percentage / 100) * 270 - 45;
+            gauge.style.transform = `rotate(${degrees}deg)`;
+            gauge.style.transition = 'transform 0.5s ease';
+        }
+
+        function renderDrivers(containerId, drivers) {
+            const container = document.getElementById(containerId);
+            if (!drivers || drivers.length === 0) {
+                container.innerHTML = '<div style="color: #888;">No drivers identified</div>';
+                return;
+            }
+
+            container.innerHTML = drivers.map(driver => `
+                <div class="driver-item">
+                    <div class="driver-name">${driver.name}</div>
+                    <div class="driver-description">${driver.description}</div>
+                </div>
+            `).join('');
+        }
+
+        function renderRecommendedActions() {
+            const actions = currentAnalytics.recommendedActions || [];
+            const totalPages = Math.ceil(actions.length / actionsPerPage);
+            
+            document.getElementById('recommendedActionsTitle').textContent = `${actions.length} Recommended Actions`;
+            
+            const startIndex = currentActionPage * actionsPerPage;
+            const endIndex = startIndex + actionsPerPage;
+            const currentActions = actions.slice(startIndex, endIndex);
+
+            const container = document.getElementById('actionCards');
+            container.innerHTML = currentActions.map(action => `
+                <div class="action-card">
+                    <div class="action-card-title">${action.title}</div>
+                    <div class="action-card-description">${action.description}</div>
+                </div>
+            `).join('');
+
+            // Update counter
+            document.getElementById('actionCounter').textContent = `${currentActionPage + 1}/${totalPages}`;
+
+            // Update navigation buttons
+            document.getElementById('prevAction').disabled = currentActionPage === 0;
+            document.getElementById('nextAction').disabled = currentActionPage >= totalPages - 1;
+        }
+
+        function changeAction(direction) {
+            const actions = currentAnalytics.recommendedActions || [];
+            const totalPages = Math.ceil(actions.length / actionsPerPage);
+            
+            currentActionPage += direction;
+            if (currentActionPage < 0) currentActionPage = 0;
+            if (currentActionPage >= totalPages) currentActionPage = totalPages - 1;
+            
+            renderRecommendedActions();
+        }
+
+        function switchDetailTab(tabName) {
+            // Update tabs
+            document.querySelectorAll('.detail-tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.detail-tab-content').forEach(content => content.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            
+            if (tabName === 'overview') {
+                document.getElementById('overviewTab').classList.add('active');
+            } else if (tabName === 'versions') {
+                document.getElementById('versionsTab').classList.add('active');
+                renderVersionHistory();
+            } else if (tabName === 'matching') {
+                document.getElementById('matchingTab').classList.add('active');
+                renderSiteMatching();
+            }
+        }
+
+        function renderVersionHistory() {
+            const container = document.getElementById('versionList');
+            if (!currentProtocol) return;
+            
+            const versions = ProtocolData.versions.filter(v => v.protocolId === currentProtocol.id).reverse();
+            
+            if (versions.length === 0) {
+                container.innerHTML = '<p style="color: #888;">No versions available</p>';
+                return;
+            }
+            
+            container.innerHTML = versions.map(version => {
+                const ciLevel = getMetricLevel(version.complexityScore);
+                const pbsLevel = getMetricLevel(version.patientBurdenScore);
+                const riskLevel = getRiskLevel(version.amendmentRisk);
+                const formattedDate = formatDate(version.uploadDate);
+                
+                return `
+                    <div class="version-item">
+                        <div class="version-info">
+                            <div class="version-number">Version ${version.versionNumber}</div>
+                            <div class="version-date">Uploaded: ${formattedDate}</div>
+                            <div class="version-status">
+                                <span class="protocol-status status-${currentProtocol.status === 'Draft' ? 'draft' : 'published'}">${currentProtocol.status}</span>
+                            </div>
+                        </div>
+                        <div class="version-metrics">
+                            <div class="version-metric">
+                                <div class="version-metric-label">Complexity</div>
+                                <div class="version-metric-value">${version.complexityScore}</div>
+                            </div>
+                            <div class="version-metric">
+                                <div class="version-metric-label">Burden</div>
+                                <div class="version-metric-value">${version.patientBurdenScore}</div>
+                            </div>
+                            <div class="version-metric">
+                                <div class="version-metric-label">Risk</div>
+                                <div class="version-metric-value">${version.amendmentRisk}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function getMetricLevel(score) {
+            if (score >= 75) return 'high';
+            if (score >= 50) return 'medium';
+            return 'low';
+        }
+
+        function getRiskLevel(risk) {
+            if (risk === 'Very High' || risk === 'High') return 'high';
+            if (risk === 'Medium') return 'medium';
+            return 'low';
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const year = date.getFullYear();
+            return `${month}-${day}-${year}`;
+        }
+
+        function exportUSDM(protocolId, versionId) {
+            const usdmData = ProtocolData.getUSDMExport(protocolId);
+            const blob = new Blob([usdmData], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${protocolId}_export.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function sendToEDC(protocolId) {
+            const button = event ? event.target : null;
+            if (button) {
+                button.classList.add('btn-loading');
+                const originalText = button.innerHTML;
+                button.innerHTML = '<span class="spinner"></span> Sending...';
+                button.disabled = true;
+
+                setTimeout(() => {
+                    const odmData = ProtocolData.getODMExport(protocolId || currentProtocol.id);
+                    alert('Successfully sent to EDC!\n\nODM Payload:\n' + odmData.substring(0, 200) + '...');
+                    if (button) {
+                        button.classList.remove('btn-loading');
+                        button.innerHTML = originalText;
+                        button.disabled = false;
+                    }
+                }, 2000);
+            } else {
+                const odmData = ProtocolData.getODMExport(protocolId || currentProtocol.id);
+                alert('Successfully sent to EDC!\n\nODM Payload:\n' + odmData.substring(0, 200) + '...');
+            }
+        }
+
+        function renderSiteMatching() {
+            if (!currentProtocol) return;
+            
+            const matches = ProtocolData.matchSitesToProtocol(currentProtocol.id);
+            const container = document.getElementById('siteLeaderboard');
+            
+            if (matches.length === 0) {
+                container.innerHTML = '<p style="color: #888;">No matching sites found</p>';
+                return;
+            }
+            
+            container.innerHTML = matches.map(match => `
+                <div class="site-match-card">
+                    <div class="site-match-info">
+                        <div class="site-match-name">${match.site.name}</div>
+                        <div class="site-match-location">${match.site.location}</div>
+                        <div class="site-match-details">${match.matchDetails}</div>
+                        ${match.missingCapabilities.length > 0 ? `
+                            <div class="site-match-details" style="margin-top: 8px; color: #888;">
+                                Missing: ${match.missingCapabilities.slice(0, 3).join(', ')}${match.missingCapabilities.length > 3 ? '...' : ''}
+                            </div>
+                        ` : ''}
+                    </div>
+                    <div class="site-match-score">
+                        <div class="match-score-value">${match.matchScore}%</div>
+                        <div class="match-score-label">Match Score</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function showUploadModal() {
+            document.getElementById('uploadModal').classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        function setupUpload() {
+            const uploadArea = document.getElementById('uploadArea');
+            const fileInput = document.getElementById('fileInput');
+
+            // Drag and drop
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.classList.add('dragover');
+            });
+
+            uploadArea.addEventListener('dragleave', () => {
+                uploadArea.classList.remove('dragover');
+            });
+
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    handleFileUpload(files[0]);
+                }
+            });
+
+            fileInput.addEventListener('change', (e) => {
+                if (e.target.files.length > 0) {
+                    handleFileUpload(e.target.files[0]);
+                }
+            });
+
+            // Close modal on outside click
+            document.getElementById('uploadModal').addEventListener('click', (e) => {
+                if (e.target.id === 'uploadModal') {
+                    closeModal('uploadModal');
+                }
+            });
+        }
+
+        function handleFileUpload(file) {
+            if (file.type !== 'application/pdf') {
+                showToast('Please upload a PDF file');
+                return;
+            }
+
+            // Show pipeline
+            document.getElementById('pipeline').style.display = 'flex';
+            // Simulate upload and processing
+            simulatePipeline();
+        }
+
+        function simulatePipeline() {
+            const steps = ['step1', 'step2', 'step3'];
+            let currentStep = 0;
+
+            // Reset pipeline
+            steps.forEach(step => {
+                document.getElementById(step).classList.remove('active', 'completed');
+            });
+
+            function processNextStep() {
+                if (currentStep > 0) {
+                    document.getElementById(steps[currentStep - 1]).classList.remove('active');
+                    document.getElementById(steps[currentStep - 1]).classList.add('completed');
+                }
+                
+                if (currentStep < steps.length) {
+                    document.getElementById(steps[currentStep]).classList.add('active');
+                    currentStep++;
+                    setTimeout(processNextStep, 1500);
+                } else {
+                    // Pipeline complete - create new version
+                    createNewVersion();
+                }
+            }
+
+            processNextStep();
+        }
+
+        function createNewVersion() {
+            if (!currentProtocol) return;
+
+            const existingVersions = ProtocolData.versions.filter(v => v.protocolId === currentProtocol.id);
+            const latestVersion = existingVersions.length > 0 ? existingVersions[existingVersions.length - 1] : null;
+            const currentVersionNumber = latestVersion ? latestVersion.versionNumber : '0.0';
+            const versionParts = currentVersionNumber.split('.');
+            const newMinorVersion = parseInt(versionParts[1] || 0) + 1;
+            const newVersionNumber = `${versionParts[0]}.${newMinorVersion}`;
+            
+            const newVersion = {
+                id: `VER-${Date.now()}`,
+                protocolId: currentProtocol.id,
+                versionNumber: newVersionNumber,
+                uploadDate: new Date().toISOString().split('T')[0],
+                complexityScore: Math.floor(Math.random() * 30) + 70,
+                patientBurdenScore: Math.floor(Math.random() * 30) + 60,
+                amendmentRisk: ['Low', 'Medium', 'High'][Math.floor(Math.random() * 3)],
+                status: 'Completed'
+            };
+
+            ProtocolData.versions.push(newVersion);
+            showToast('New version uploaded successfully!');
+            closeModal('uploadModal');
+            
+            // Refresh version history if on that tab
+            if (document.getElementById('versionsTab').classList.contains('active')) {
+                renderVersionHistory();
+            }
+        }
+
+        function showToast(message) {
+            document.getElementById('toastMessage').textContent = message;
+            document.getElementById('toast').classList.add('active');
+            setTimeout(() => {
+                document.getElementById('toast').classList.remove('active');
+            }, 3000);
+        }
+
+        function exportProtocol() {
+            if (currentProtocol) {
+                const usdmData = ProtocolData.getUSDMExport(currentProtocol.id);
+                const blob = new Blob([usdmData], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${currentProtocol.id}_export.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+            }
+        }
+    </script>
+</body>
+</html>

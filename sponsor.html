@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sponsor View - Verily Digital Protocol</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Sponsor-specific styles */
+        /* Upload Section */
+        .upload-section {
+            background: white;
+            border: 1px solid var(--verily-border);
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .upload-area {
+            border: 2px dashed var(--verily-border);
+            border-radius: 8px;
+            padding: 48px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .upload-area:hover {
+            border-color: var(--verily-primary);
+            background: rgba(10, 122, 107, 0.02);
+        }
+
+        .upload-area.dragover {
+            border-color: var(--verily-primary);
+            background: rgba(10, 122, 107, 0.05);
+        }
+
+        .upload-icon {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 16px;
+            opacity: 0.5;
+        }
+
+        .upload-text {
+            font-size: 1.1em;
+            color: var(--verily-secondary);
+            margin-bottom: 8px;
+        }
+
+        .upload-hint {
+            font-size: 0.9em;
+            color: #888;
+        }
+
+        /* Pipeline Visualization */
+        .pipeline {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 40px 0;
+            position: relative;
+        }
+
+        .pipeline::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--verily-border);
+            z-index: 0;
+        }
+
+        .pipeline-step {
+            background: white;
+            border: 2px solid var(--verily-border);
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 1;
+            transition: all 0.3s ease;
+        }
+
+        .pipeline-step.active {
+            border-color: var(--verily-primary);
+            background: var(--verily-primary);
+            color: white;
+        }
+
+        .pipeline-step.completed {
+            border-color: var(--verily-success);
+            background: var(--verily-success);
+            color: white;
+        }
+
+        .pipeline-step-label {
+            position: absolute;
+            top: 100%;
+            margin-top: 12px;
+            font-size: 0.85em;
+            color: var(--verily-text);
+            white-space: nowrap;
+        }
+
+        .pipeline-step.active .pipeline-step-label {
+            color: var(--verily-primary);
+            font-weight: 600;
+        }
+
+        /* Version List */
+        .version-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .version-item {
+            background: white;
+            border: 1px solid var(--verily-border);
+            border-radius: 8px;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .version-info {
+            flex: 1;
+        }
+
+        .version-number {
+            font-weight: 600;
+            color: var(--verily-secondary);
+            margin-bottom: 4px;
+        }
+
+        .version-date {
+            font-size: 0.85em;
+            color: #888;
+        }
+
+        .version-metrics {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .version-metric {
+            text-align: center;
+        }
+
+        .version-metric-label {
+            font-size: 0.75em;
+            color: #888;
+            margin-bottom: 4px;
+        }
+
+        .version-metric-value {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: var(--verily-secondary);
+        }
+
+        /* Site Matching */
+        .site-leaderboard {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .site-match-card {
+            background: white;
+            border: 1px solid var(--verily-border);
+            border-radius: 12px;
+            padding: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s ease;
+        }
+
+        .site-match-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .site-match-info {
+            flex: 1;
+        }
+
+        .site-match-name {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: var(--verily-secondary);
+            margin-bottom: 4px;
+        }
+
+        .site-match-location {
+            font-size: 0.9em;
+            color: #888;
+            margin-bottom: 8px;
+        }
+
+        .site-match-details {
+            font-size: 0.85em;
+            color: var(--verily-text);
+        }
+
+        .site-match-score {
+            text-align: center;
+            margin-right: 24px;
+        }
+
+        .match-score-value {
+            font-size: 2em;
+            font-weight: 600;
+            color: var(--verily-primary);
+            margin-bottom: 4px;
+        }
+
+        .match-score-label {
+            font-size: 0.85em;
+            color: #888;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .modal-title {
+            font-size: 1.5em;
+            font-weight: 600;
+            color: var(--verily-secondary);
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            cursor: pointer;
+            opacity: 0.6;
+        }
+
+        .modal-close:hover {
+            opacity: 1;
+        }
+
+        .code-block {
+            background: #f5f5f5;
+            border: 1px solid var(--verily-border);
+            border-radius: 8px;
+            padding: 16px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: var(--verily-success);
+            color: white;
+            padding: 16px 24px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            display: none;
+            z-index: 2000;
+            animation: slideIn 0.3s ease;
+        }
+
+        .toast.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Spinner */
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .btn-loading {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .protocol-card-header {
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .protocol-version-info {
+            font-size: 0.85em;
+            color: #888;
+            margin-top: 6px;
+        }
+
+        .protocol-version-history {
+            font-size: 0.8em;
+            color: #888;
+            margin-top: 4px;
+        }
+
+        .protocol-meta {
+            margin-bottom: 16px;
+        }
+
+        .protocol-meta .protocol-details {
+            margin-bottom: 8px;
+        }
+
+        .protocol-meta .protocol-details:last-child {
+            margin-bottom: 0;
+        }
+
+        .protocol-metrics {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .metric-label {
+            font-size: 0.85em;
+            color: var(--verily-text);
+            font-weight: 500;
+        }
+
+        .metric-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px 12px;
+            border-radius: 8px;
+            font-size: 0.75em;
+            font-weight: 600;
+        }
+
+        .btn-upload {
+            background: var(--verily-primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-upload:hover {
+            background: var(--verily-primary-hover);
+        }
+
+        .btn-upload:active {
+            transform: translateY(1px);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <div class="nav-bar">
+        <div class="nav-left">
+            <div class="nav-logo">verily</div>
+            <div class="nav-title">Protocol Insights</div>
+        </div>
+        <div class="nav-right">
+            <div class="user-profile">
+                <div class="user-avatar">JD</div>
+                <div class="user-info">
+                    <div class="user-name">Jane Dawson</div>
+                    <div class="user-org">Lumen Industries</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="welcome-section">
+        <h1 class="welcome-title" id="sponsorName">Lumen Industries</h1>
+    </div>
+
+    <!-- Overview Section -->
+    <div class="overview-section">
+        <h2 class="overview-title">Overview</h2>
+        <div class="overview-cards">
+            <div class="overview-card">
+                <div class="overview-card-label">Total Protocols</div>
+                <div class="overview-card-value" id="totalProtocols">5</div>
+                <div class="overview-card-trend trend-down">
+                    <span>↑</span>
+                    <span>+5%</span>
+                </div>
+            </div>
+            <div class="overview-card">
+                <div class="overview-card-label">Avoidable Amendment Risks</div>
+                <div class="overview-card-value" id="amendmentRisks">3</div>
+                <div class="overview-card-trend trend-up">
+                    <span>↑</span>
+                    <span>+20%</span>
+                </div>
+            </div>
+            <div class="overview-card">
+                <div class="overview-card-label">Patient Burden Score</div>
+                <div class="overview-card-value" id="avgPatientBurden">62/100</div>
+                <div class="overview-card-trend trend-down">
+                    <span>↓</span>
+                    <span>-15%</span>
+                </div>
+            </div>
+            <div class="overview-card">
+                <div class="overview-card-label">Complexity Index</div>
+                <div class="overview-card-value" id="avgComplexity">76/100</div>
+                <div class="overview-card-trend trend-down">
+                    <span>↓</span>
+                    <span>-13%</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Protocols Section -->
+    <div class="protocols-section">
+            <div class="protocols-header">
+                <h2 class="protocols-title">Protocols</h2>
+                <div class="protocols-controls">
+                    <button class="btn-upload" onclick="showUploadModal()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="margin-right: 6px;">
+                            <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/>
+                        </svg>
+                        Upload Protocol
+                    </button>
+                    <div class="search-box">
+                        <svg class="search-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                        </svg>
+                        <input type="text" class="search-input" id="protocolSearch" placeholder="Search for study name">
+                    </div>
+                    <select class="filter-select" id="phaseFilter">
+                        <option value="">Phase</option>
+                    </select>
+                    <select class="filter-select" id="taFilter">
+                        <option value="">Therapeutic area</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="protocol-cards" id="protocolCards">
+                <!-- Protocol cards will be rendered here -->
+            </div>
+    </div>
+
+    <!-- Upload Modal -->
+    <div class="modal" id="uploadModal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <div class="modal-title">Upload Protocol</div>
+                <svg class="modal-close" onclick="closeModal('uploadModal')" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                </svg>
+            </div>
+            <div class="upload-section" style="margin: 0;">
+                <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
+                    <svg class="upload-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/>
+                    </svg>
+                    <div class="upload-text">Click to upload or drag and drop</div>
+                    <div class="upload-hint">PDF Protocol Document (Max 10MB)</div>
+                </div>
+                <input type="file" id="fileInput" accept=".pdf" style="display: none;">
+            </div>
+
+            <!-- Pipeline Visualization -->
+            <div class="pipeline" id="pipeline" style="display: none; margin: 32px 0;">
+                <div class="pipeline-step" id="step1">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+                    </svg>
+                    <div class="pipeline-step-label">Ingestion</div>
+                </div>
+                <div class="pipeline-step" id="step2">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                    <div class="pipeline-step-label">LLM Extraction</div>
+                </div>
+                <div class="pipeline-step" id="step3">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
+                    </svg>
+                    <div class="pipeline-step-label">Analytics</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- USDM Export Modal -->
+    <div class="modal" id="usdmModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">USDM Export</div>
+                <svg class="modal-close" onclick="closeModal('usdmModal')" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                </svg>
+            </div>
+            <div class="code-block" id="usdmContent"></div>
+        </div>
+    </div>
+
+    <!-- ODM Export Modal -->
+    <div class="modal" id="odmModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">ODM Export</div>
+                <svg class="modal-close" onclick="closeModal('odmModal')" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                </svg>
+            </div>
+            <div class="code-block" id="odmContent"></div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <div id="toastMessage"></div>
+    </div>
+
+    <script src="data.js"></script>
+    <script>
+        let currentProtocolId = null;
+        let pipelineActive = false;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            renderProtocols();
+            setupUpload();
+            setupEventListeners();
+        });
+
+
+        function showUploadModal() {
+            document.getElementById('uploadModal').classList.add('active');
+        }
+
+        function renderProtocols() {
+            const container = document.getElementById('protocolCards');
+            if (!container) {
+                console.error('Protocol cards container not found');
+                return;
+            }
+            
+            if (!window.ProtocolData) {
+                console.error('ProtocolData not loaded');
+                return;
+            }
+            
+            const sponsorProtocols = ProtocolData.protocols.filter(p => p.sponsorId === 'SPONSOR-001');
+            console.log('Sponsor protocols:', sponsorProtocols.length);
+            
+            if (sponsorProtocols.length === 0) {
+                container.innerHTML = '<p>No protocols found</p>';
+                return;
+            }
+            
+            container.innerHTML = sponsorProtocols.map(protocol => {
+                const versions = ProtocolData.versions.filter(v => v.protocolId === protocol.id);
+                const versionCount = versions.length;
+                const latestVersion = versions.length > 0 ? versions[versions.length - 1] : null;
+                const hasVersion = latestVersion !== null;
+                
+                const ciLevel = hasVersion ? getMetricLevel(latestVersion.complexityScore) : null;
+                const pbsLevel = hasVersion ? getMetricLevel(latestVersion.patientBurdenScore) : null;
+                const riskLevel = hasVersion ? getRiskLevel(latestVersion.amendmentRisk) : null;
+                const uploadDate = hasVersion ? latestVersion.uploadDate : '';
+                const formattedDate = uploadDate ? formatDate(uploadDate) : '';
+                const statusClass = protocol.status === 'Draft' ? 'draft' : 'published';
+                const lastUpdated = latestVersion ? formatDate(latestVersion.uploadDate) : '';
+                
+                if (hasVersion) {
+                    return `
+                        <div class="protocol-card" onclick="showProtocolDetail('${protocol.id}')">
+                            <div class="protocol-card-header">
+                                <div>
+                                    <div class="protocol-title">${protocol.title}</div>
+                                    <div class="protocol-version-info">Version ${latestVersion.versionNumber}</div>
+                                    <div class="protocol-version-history">${versionCount} version${versionCount !== 1 ? 's' : ''} • Last updated: ${lastUpdated}</div>
+                                </div>
+                                <span class="protocol-status status-${statusClass}">${protocol.status}</span>
+                            </div>
+                            <div class="protocol-meta">
+                                <div class="protocol-details">${protocol.phase} | ${protocol.therapeuticArea}</div>
+                            </div>
+                            <div class="protocol-metrics">
+                                <div class="metric-row">
+                                    <span class="metric-label">Complexity</span>
+                                    <span class="metric-badge metric-${ciLevel}">${ciLevel.charAt(0).toUpperCase() + ciLevel.slice(1)}</span>
+                                </div>
+                                <div class="metric-row">
+                                    <span class="metric-label">Patient Burden</span>
+                                    <span class="metric-badge metric-${pbsLevel}">${pbsLevel.charAt(0).toUpperCase() + pbsLevel.slice(1)}</span>
+                                </div>
+                                <div class="metric-row">
+                                    <span class="metric-label">Amendment Risk</span>
+                                    <span class="metric-badge metric-${riskLevel}">${riskLevel.charAt(0).toUpperCase() + riskLevel.slice(1)}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    return `
+                        <div class="protocol-card" onclick="showProtocolDetail('${protocol.id}')">
+                            <div class="protocol-card-header">
+                                <div>
+                                    <div class="protocol-title">${protocol.title}</div>
+                                    <div class="protocol-version-info">No version yet</div>
+                                </div>
+                                <span class="protocol-status status-${statusClass}">${protocol.status}</span>
+                            </div>
+                            <div class="protocol-meta">
+                                <div class="protocol-details">${protocol.phase} | ${protocol.therapeuticArea}</div>
+                            </div>
+                            <div class="protocol-metrics">
+                                <div class="metric-row">
+                                    <span class="metric-label">Complexity</span>
+                                    <span class="metric-badge" style="background: #f3f4f6; color: #6b7280;">-</span>
+                                </div>
+                                <div class="metric-row">
+                                    <span class="metric-label">Patient Burden</span>
+                                    <span class="metric-badge" style="background: #f3f4f6; color: #6b7280;">-</span>
+                                </div>
+                                <div class="metric-row">
+                                    <span class="metric-label">Amendment Risk</span>
+                                    <span class="metric-badge" style="background: #f3f4f6; color: #6b7280;">-</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+            }).join('');
+            
+            updateOverviewMetrics();
+            initializeFilters();
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const year = date.getFullYear();
+            return `${month}-${day}-${year}`;
+        }
+
+        function updateOverviewMetrics() {
+            const sponsorProtocols = ProtocolData.protocols.filter(p => p.sponsorId === 'SPONSOR-001');
+            const versions = ProtocolData.versions.filter(v => 
+                sponsorProtocols.some(p => p.id === v.protocolId)
+            );
+            
+            document.getElementById('totalProtocols').textContent = sponsorProtocols.length;
+            
+            const highRiskCount = versions.filter(v => 
+                v.amendmentRisk === 'High' || v.amendmentRisk === 'Very High'
+            ).length;
+            document.getElementById('amendmentRisks').textContent = highRiskCount;
+            
+            if (versions.length > 0) {
+                const avgBurden = Math.round(
+                    versions.reduce((sum, v) => sum + v.patientBurdenScore, 0) / versions.length
+                );
+                document.getElementById('avgPatientBurden').textContent = `${avgBurden}/100`;
+                
+                const avgComplexity = Math.round(
+                    versions.reduce((sum, v) => sum + v.complexityScore, 0) / versions.length
+                );
+                document.getElementById('avgComplexity').textContent = `${avgComplexity}/100`;
+            }
+        }
+
+        function initializeFilters() {
+            const phaseFilter = document.getElementById('phaseFilter');
+            const taFilter = document.getElementById('taFilter');
+            const sponsorProtocols = ProtocolData.protocols.filter(p => p.sponsorId === 'SPONSOR-001');
+            
+            const phases = [...new Set(sponsorProtocols.map(p => p.phase))].sort();
+            const tas = [...new Set(sponsorProtocols.map(p => p.therapeuticArea))].sort();
+            
+            phases.forEach(phase => {
+                const option = document.createElement('option');
+                option.value = phase;
+                option.textContent = phase;
+                phaseFilter.appendChild(option);
+            });
+            
+            tas.forEach(ta => {
+                const option = document.createElement('option');
+                option.value = ta;
+                option.textContent = ta;
+                taFilter.appendChild(option);
+            });
+        }
+
+
+        function showProtocolDetail(protocolId) {
+            window.location.href = `protocol-detail.html?id=${protocolId}`;
+        }
+
+        function getMetricLevel(score) {
+            if (score >= 75) return 'high';
+            if (score >= 50) return 'medium';
+            return 'low';
+        }
+
+        function getRiskLevel(risk) {
+            if (risk === 'Very High' || risk === 'High') return 'high';
+            if (risk === 'Medium') return 'medium';
+            return 'low';
+        }
+
+        function setupUpload() {
+            const uploadArea = document.getElementById('uploadArea');
+            const fileInput = document.getElementById('fileInput');
+
+            // Drag and drop
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.classList.add('dragover');
+            });
+
+            uploadArea.addEventListener('dragleave', () => {
+                uploadArea.classList.remove('dragover');
+            });
+
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    handleFileUpload(files[0]);
+                }
+            });
+
+            fileInput.addEventListener('change', (e) => {
+                if (e.target.files.length > 0) {
+                    handleFileUpload(e.target.files[0]);
+                }
+            });
+        }
+
+        function handleFileUpload(file) {
+            if (file.type !== 'application/pdf') {
+                showToast('Please upload a PDF file');
+                return;
+            }
+
+            // Show pipeline
+            document.getElementById('pipeline').style.display = 'flex';
+            // Simulate upload and processing
+            simulatePipeline();
+        }
+
+        function simulatePipeline() {
+            pipelineActive = true;
+            const steps = ['step1', 'step2', 'step3'];
+            let currentStep = 0;
+
+            // Reset pipeline
+            steps.forEach(step => {
+                document.getElementById(step).classList.remove('active', 'completed');
+            });
+
+            function processNextStep() {
+                if (currentStep > 0) {
+                    document.getElementById(steps[currentStep - 1]).classList.remove('active');
+                    document.getElementById(steps[currentStep - 1]).classList.add('completed');
+                }
+                
+                if (currentStep < steps.length) {
+                    document.getElementById(steps[currentStep]).classList.add('active');
+                    currentStep++;
+                    setTimeout(processNextStep, 1500);
+                } else {
+                    // Pipeline complete - create new version
+                    createNewVersion();
+                    pipelineActive = false;
+                }
+            }
+
+            processNextStep();
+        }
+
+        function createNewVersion() {
+            // Generate new version for PROT-001
+            const protocolId = 'PROT-001';
+            const existingVersions = ProtocolData.versions.filter(v => v.protocolId === protocolId);
+            const newVersionNumber = `1.${existingVersions.length + 1}`;
+            
+            const newVersion = {
+                id: `VER-${Date.now()}`,
+                protocolId: protocolId,
+                versionNumber: newVersionNumber,
+                uploadDate: new Date().toISOString().split('T')[0],
+                complexityScore: Math.floor(Math.random() * 30) + 70,
+                patientBurdenScore: Math.floor(Math.random() * 30) + 60,
+                amendmentRisk: ['Low', 'Medium', 'High'][Math.floor(Math.random() * 3)],
+                status: 'Completed'
+            };
+
+            ProtocolData.versions.push(newVersion);
+            showToast('Protocol processed successfully!');
+            closeModal('uploadModal');
+            renderProtocols();
+        }
+
+        function renderVersionList() {
+            const container = document.getElementById('versionList');
+            const protocolId = 'PROT-001';
+            const versions = ProtocolData.versions.filter(v => v.protocolId === protocolId).reverse();
+            
+            container.innerHTML = versions.map(version => `
+                <div class="version-item">
+                    <div class="version-info">
+                        <div class="version-number">Version ${version.versionNumber}</div>
+                        <div class="version-date">Uploaded: ${version.uploadDate}</div>
+                    </div>
+                    <div class="version-metrics">
+                        <div class="version-metric">
+                            <div class="version-metric-label">Complexity</div>
+                            <div class="version-metric-value">${version.complexityScore}</div>
+                        </div>
+                        <div class="version-metric">
+                            <div class="version-metric-label">Burden</div>
+                            <div class="version-metric-value">${version.patientBurdenScore}</div>
+                        </div>
+                        <div class="version-metric">
+                            <div class="version-metric-label">Risk</div>
+                            <div class="version-metric-value">${version.amendmentRisk}</div>
+                        </div>
+                        <button class="btn-explore" onclick="exportUSDM('${protocolId}')" style="margin-left: 16px;">Finalize</button>
+                        <button class="btn-explore" onclick="sendToEDC('${protocolId}')" style="margin-left: 8px; background: var(--verily-accent);">Send to EDC</button>
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById('versionListContainer').style.display = 'block';
+        }
+
+        function exportUSDM(protocolId) {
+            const usdmData = ProtocolData.getUSDMExport(protocolId);
+            document.getElementById('usdmContent').textContent = usdmData;
+            document.getElementById('usdmModal').classList.add('active');
+        }
+
+        function exportODM(protocolId) {
+            const odmData = ProtocolData.getODMExport(protocolId);
+            document.getElementById('odmContent').textContent = odmData;
+            document.getElementById('odmModal').classList.add('active');
+        }
+
+        function sendToEDC(protocolId) {
+            const button = event.target;
+            button.classList.add('btn-loading');
+            button.innerHTML = '<span class="spinner"></span> Sending...';
+            button.disabled = true;
+
+            setTimeout(() => {
+                exportODM(protocolId);
+                button.classList.remove('btn-loading');
+                button.innerHTML = 'Send to EDC';
+                button.disabled = false;
+                showToast('Successfully sent to EDC!');
+            }, 2000);
+        }
+
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        function showToast(message) {
+            document.getElementById('toastMessage').textContent = message;
+            document.getElementById('toast').classList.add('active');
+            setTimeout(() => {
+                document.getElementById('toast').classList.remove('active');
+            }, 3000);
+        }
+
+        function setupEventListeners() {
+            document.getElementById('protocolSearch').addEventListener('input', filterProtocols);
+            document.getElementById('phaseFilter').addEventListener('change', filterProtocols);
+            document.getElementById('taFilter').addEventListener('change', filterProtocols);
+        }
+
+        function filterProtocols() {
+            const searchTerm = document.getElementById('protocolSearch').value.toLowerCase();
+            const phaseFilter = document.getElementById('phaseFilter').value;
+            const taFilter = document.getElementById('taFilter').value;
+            const sponsorProtocols = ProtocolData.protocols.filter(p => p.sponsorId === 'SPONSOR-001');
+            
+            const cards = document.querySelectorAll('.protocol-card');
+            cards.forEach((card, index) => {
+                const protocol = sponsorProtocols[index];
+                if (!protocol) return;
+                
+                const text = card.textContent.toLowerCase();
+                const matchesSearch = !searchTerm || text.includes(searchTerm);
+                const matchesPhase = !phaseFilter || protocol.phase === phaseFilter;
+                const matchesTA = !taFilter || protocol.therapeuticArea === taFilter;
+                
+                card.style.display = (matchesSearch && matchesPhase && matchesTA) ? 'block' : 'none';
+            });
+
+            // Close modals on outside click
+            document.getElementById('usdmModal').addEventListener('click', (e) => {
+                if (e.target.id === 'usdmModal') {
+                    closeModal('usdmModal');
+                }
+            });
+
+            document.getElementById('odmModal').addEventListener('click', (e) => {
+                if (e.target.id === 'odmModal') {
+                    closeModal('odmModal');
+                }
+            });
+        }
+
+        // Make functions available globally
+        window.exportODM = exportODM;
+        window.sendToEDC = sendToEDC;
+    </script>
+</body>
+</html>
