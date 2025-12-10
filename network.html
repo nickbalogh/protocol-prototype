@@ -7,6 +7,43 @@
     <link rel="stylesheet" href="styles.css">
     <style>
         /* Network-specific styles */
+        /* Tabs */
+        .view-tabs {
+            display: flex;
+            gap: 0;
+            border-bottom: 1px solid var(--verily-border);
+            margin: 0 40px 24px 40px;
+        }
+
+        .view-tab {
+            padding: 16px 24px;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            font-size: 0.95em;
+            font-weight: 500;
+            color: var(--verily-text);
+            transition: all 0.2s ease;
+        }
+
+        .view-tab:hover {
+            color: var(--verily-primary);
+        }
+
+        .view-tab.active {
+            color: var(--verily-primary);
+            border-bottom-color: var(--verily-primary);
+        }
+
+        .view-content {
+            display: none;
+        }
+
+        .view-content.active {
+            display: block;
+        }
+
         .sites-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
@@ -100,13 +137,126 @@
             color: #888;
             margin-top: 8px;
         }
+
+        /* Protocol list styles */
+        .protocols-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .protocol-card {
+            background: white;
+            border: 1px solid var(--verily-border);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .protocol-card:hover {
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+            transform: translateY(-2px);
+        }
+
+        .protocol-card-header {
+            margin-bottom: 16px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .protocol-card-title {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: var(--verily-secondary);
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .protocol-card-meta {
+            font-size: 0.9em;
+            color: #888;
+            margin-top: 8px;
+            line-height: 1.5;
+            display: block;
+        }
+
+        .protocol-card-metrics {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 16px;
+            border-top: 1px solid var(--verily-border);
+        }
+
+        .protocol-metric {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .protocol-metric-value {
+            font-size: 1.8em;
+            font-weight: 600;
+            color: var(--verily-primary);
+            margin-bottom: 4px;
+        }
+
+        .protocol-metric-label {
+            font-size: 0.75em;
+            color: #888;
+        }
+
+        .protocol-card-requirements {
+            margin: 16px 0;
+            padding-top: 16px;
+            border-top: 1px solid var(--verily-border);
+        }
+
+        .protocol-requirements-label {
+            font-size: 0.85em;
+            font-weight: 600;
+            color: var(--verily-secondary);
+            margin-bottom: 8px;
+        }
+
+        .protocol-requirements-list {
+            font-size: 0.85em;
+            color: var(--verily-text);
+            line-height: 1.6;
+            max-height: 120px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .protocol-requirements-list.truncated::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 30px;
+            background: linear-gradient(to bottom, transparent, white);
+        }
+
+        .protocol-requirement-item {
+            margin-bottom: 4px;
+        }
+
+        .protocol-requirement-item::before {
+            content: '• ';
+            color: var(--verily-primary);
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
     <!-- Navigation Bar -->
     <div class="nav-bar">
         <div class="nav-left">
-            <div class="nav-logo">verily</div>
+            <a href="index.html" class="nav-logo">verily</a>
             <div class="nav-title">Protocol Insights</div>
         </div>
         <div class="nav-right">
@@ -125,41 +275,107 @@
         <h1 class="welcome-title">Clinical Research Network</h1>
     </div>
 
-    <!-- Sites Section -->
-    <div class="protocols-section">
-        <div class="protocols-header">
-            <h2 class="protocols-title">Sites</h2>
-            <div class="protocols-controls">
-                <div class="search-box">
-                    <svg class="search-icon" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
-                    </svg>
-                    <input type="text" class="search-input" id="siteSearch" placeholder="Search sites">
+    <!-- Tabs -->
+    <div class="view-tabs">
+        <button class="view-tab active" onclick="switchView('protocols', event)">Available Protocols</button>
+        <button class="view-tab" onclick="switchView('sites', event)">Sites</button>
+    </div>
+
+    <!-- Protocols View -->
+    <div class="view-content active" id="protocolsView">
+        <div class="protocols-section">
+            <div class="protocols-header">
+                <h2 class="protocols-title">Available Protocols</h2>
+                <div class="protocols-controls">
+                    <div class="search-box">
+                        <svg class="search-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                        </svg>
+                        <input type="text" class="search-input" id="protocolSearch" placeholder="Search protocols">
+                    </div>
+                    <select class="filter-select" id="phaseFilter">
+                        <option value="">Phase</option>
+                    </select>
+                    <select class="filter-select" id="therapeuticAreaFilter">
+                        <option value="">Therapeutic Area</option>
+                    </select>
                 </div>
-                <select class="filter-select" id="specialtyFilter">
-                    <option value="">Specialty</option>
-                </select>
-                <select class="filter-select" id="capabilityFilter">
-                    <option value="">Capability</option>
-                </select>
+            </div>
+            <div class="protocols-grid" id="protocolsGrid">
+                <!-- Protocol cards will be rendered here -->
             </div>
         </div>
-        <div class="sites-grid" id="sitesGrid">
-            <!-- Site cards will be rendered here -->
+    </div>
+
+    <!-- Sites View -->
+    <div class="view-content" id="sitesView">
+        <div class="protocols-section">
+            <div class="protocols-header">
+                <h2 class="protocols-title">Sites</h2>
+                <div class="protocols-controls">
+                    <div class="search-box">
+                        <svg class="search-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                        </svg>
+                        <input type="text" class="search-input" id="siteSearch" placeholder="Search sites">
+                    </div>
+                    <select class="filter-select" id="specialtyFilter">
+                        <option value="">Specialty</option>
+                    </select>
+                    <select class="filter-select" id="capabilityFilter">
+                        <option value="">Capability</option>
+                    </select>
+                </div>
+            </div>
+            <div class="sites-grid" id="sitesGrid">
+                <!-- Site cards will be rendered here -->
+            </div>
         </div>
     </div>
+
 
     <script src="data.js"></script>
     <script>
         let allSites = [];
+        let allProtocols = [];
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
             allSites = ProtocolData.sites;
+            // Filter to only published protocols
+            allProtocols = ProtocolData.protocols.filter(p => 
+                p.status === 'Published' && p.isPublic === true
+            );
             initializeFilters();
             renderSites();
+            renderProtocols();
             setupEventListeners();
         });
+
+        function switchView(viewName, evt) {
+            // Update tabs
+            document.querySelectorAll('.view-tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.view-content').forEach(content => content.classList.remove('active'));
+            
+            if (evt && evt.target) {
+                evt.target.classList.add('active');
+            } else {
+                // Fallback: find the button by viewName
+                const buttons = document.querySelectorAll('.view-tab');
+                buttons.forEach(btn => {
+                    if ((viewName === 'sites' && btn.textContent.trim() === 'Sites') ||
+                        (viewName === 'protocols' && btn.textContent.trim() === 'Available Protocols')) {
+                        btn.classList.add('active');
+                    }
+                });
+            }
+            
+            if (viewName === 'sites') {
+                document.getElementById('sitesView').classList.add('active');
+            } else if (viewName === 'protocols') {
+                document.getElementById('protocolsView').classList.add('active');
+            }
+        }
 
         function initializeFilters() {
             // Get all unique specialties
@@ -181,12 +397,35 @@
                 option.textContent = capability;
                 capabilityFilter.appendChild(option);
             });
+
+            // Initialize protocol filters
+            const phases = [...new Set(allProtocols.map(p => p.phase))].sort();
+            const phaseFilter = document.getElementById('phaseFilter');
+            phases.forEach(phase => {
+                const option = document.createElement('option');
+                option.value = phase;
+                option.textContent = phase;
+                phaseFilter.appendChild(option);
+            });
+
+            const therapeuticAreas = [...new Set(allProtocols.map(p => p.therapeuticArea))].sort();
+            const therapeuticAreaFilter = document.getElementById('therapeuticAreaFilter');
+            therapeuticAreas.forEach(ta => {
+                const option = document.createElement('option');
+                option.value = ta;
+                option.textContent = ta;
+                therapeuticAreaFilter.appendChild(option);
+            });
         }
 
         function setupEventListeners() {
             document.getElementById('siteSearch').addEventListener('input', filterSites);
             document.getElementById('specialtyFilter').addEventListener('change', filterSites);
             document.getElementById('capabilityFilter').addEventListener('change', filterSites);
+            
+            document.getElementById('protocolSearch').addEventListener('input', filterProtocols);
+            document.getElementById('phaseFilter').addEventListener('change', filterProtocols);
+            document.getElementById('therapeuticAreaFilter').addEventListener('change', filterProtocols);
         }
 
         function filterSites() {
@@ -209,6 +448,80 @@
             });
 
             renderSites(filteredSites);
+        }
+
+        function filterProtocols() {
+            const searchTerm = document.getElementById('protocolSearch').value.toLowerCase();
+            const phaseFilter = document.getElementById('phaseFilter').value;
+            const therapeuticAreaFilter = document.getElementById('therapeuticAreaFilter').value;
+
+            const filteredProtocols = allProtocols.filter(protocol => {
+                const matchesSearch = !searchTerm || 
+                    protocol.title.toLowerCase().includes(searchTerm) ||
+                    protocol.therapeuticArea.toLowerCase().includes(searchTerm);
+                
+                const matchesPhase = !phaseFilter || protocol.phase === phaseFilter;
+                const matchesTherapeuticArea = !therapeuticAreaFilter || 
+                    protocol.therapeuticArea === therapeuticAreaFilter;
+
+                return matchesSearch && matchesPhase && matchesTherapeuticArea;
+            });
+
+            renderProtocols(filteredProtocols);
+        }
+
+        function renderProtocols(protocols = allProtocols) {
+            const container = document.getElementById('protocolsGrid');
+            if (!container || !window.ProtocolData) {
+                console.error('Container or ProtocolData not found');
+                return;
+            }
+
+            if (protocols.length === 0) {
+                container.innerHTML = '<p style="color: #888; grid-column: 1 / -1;">No protocols found matching your criteria</p>';
+                return;
+            }
+
+            container.innerHTML = protocols.map(protocol => {
+                // Calculate high match sites (match score >= 70)
+                const matches = ProtocolData.matchSitesToProtocol(protocol.id);
+                const highMatchSites = matches.filter(m => m.matchScore >= 70);
+                const highMatchCount = highMatchSites.length;
+
+                // Show all requirements but truncate visually if there are many
+                const requirements = protocol.requirements || [];
+                const hasManyRequirements = requirements.length > 6;
+                const truncatedClass = hasManyRequirements ? 'truncated' : '';
+
+                const requirementsHtml = requirements.length > 0 
+                    ? `
+                        <div class="protocol-card-requirements">
+                            <div class="protocol-requirements-label">Requirements</div>
+                            <div class="protocol-requirements-list ${truncatedClass}">
+                                ${requirements.map(req => 
+                                    `<div class="protocol-requirement-item">${req}</div>`
+                                ).join('')}
+                            </div>
+                        </div>
+                    `
+                    : '';
+
+                return `
+                    <div class="protocol-card" onclick="window.location.href='protocol-detail.html?id=${protocol.id}&view=network'">
+                        <div class="protocol-card-header">
+                            <div class="protocol-card-title">${protocol.title}</div>
+                            <div class="protocol-card-meta">${protocol.phase} | ${protocol.therapeuticArea}</div>
+                        </div>
+                        ${requirementsHtml}
+                        <div class="protocol-card-metrics">
+                            <div class="protocol-metric">
+                                <div class="protocol-metric-value">${highMatchCount}</div>
+                                <div class="protocol-metric-label">High Match Sites</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
         }
 
         function renderSites(sites = allSites) {
@@ -260,6 +573,9 @@
                 `;
             }).join('');
         }
+
+        // Make switchView available globally
+        window.switchView = switchView;
     </script>
 </body>
 </html>

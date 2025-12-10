@@ -110,27 +110,6 @@
             transform: translateY(-2px);
         }
 
-        .marketplace-card.applied {
-            border-color: var(--verily-success);
-        }
-
-        .applied-badge {
-            position: absolute;
-            top: 16px;
-            right: 16px;
-            background: var(--verily-success);
-            color: white;
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-size: 0.75em;
-            font-weight: 600;
-            display: none;
-            z-index: 10;
-        }
-
-        .marketplace-card.applied .applied-badge {
-            display: block;
-        }
 
         .protocol-card-header {
             position: relative;
@@ -377,39 +356,13 @@
             color: var(--verily-text);
         }
 
-        .apply-button {
-            background: var(--verily-primary);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-size: 1em;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            width: 100%;
-            margin-top: 24px;
-        }
-
-        .apply-button:hover {
-            background: var(--verily-primary-hover);
-        }
-
-        .apply-button.applied {
-            background: var(--verily-success);
-            cursor: default;
-        }
-
-        .apply-button.applied::before {
-            content: '✓ ';
-        }
     </style>
 </head>
 <body>
     <!-- Navigation Bar -->
     <div class="nav-bar">
         <div class="nav-left">
-            <div class="nav-logo">verily</div>
+            <a href="index.html" class="nav-logo">verily</a>
             <div class="nav-title">Protocol Insights</div>
         </div>
         <div class="nav-right">
@@ -536,7 +489,6 @@
         // Get site ID from URL parameter, default to SITE-001
         const urlParams = new URLSearchParams(window.location.search);
         const currentSiteId = urlParams.get('id') || 'SITE-001';
-        let appliedProtocols = JSON.parse(localStorage.getItem(`appliedProtocols_${currentSiteId}`) || '[]');
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
@@ -636,7 +588,6 @@
             const publicProtocols = ProtocolData.protocols.filter(p => p.isPublic);
             
             container.innerHTML = publicProtocols.map(protocol => {
-                const isApplied = appliedProtocols.includes(protocol.id);
                 const match = ProtocolData.matchSitesToProtocol(protocol.id).find(m => m.site.id === currentSiteId);
                 const matchScore = match ? match.matchScore : 0;
                 
@@ -656,8 +607,7 @@
                 
                 if (hasVersion) {
                     return `
-                        <div class="marketplace-card ${isApplied ? 'applied' : ''}" onclick="showProtocolDetail('${protocol.id}')">
-                            <div class="applied-badge">Applied</div>
+                        <div class="marketplace-card" onclick="showProtocolDetail('${protocol.id}')">
                             <div class="protocol-card-header">
                                 <div>
                                     <div class="protocol-title">${protocol.title}</div>
@@ -690,8 +640,7 @@
                     `;
                 } else {
                     return `
-                        <div class="marketplace-card ${isApplied ? 'applied' : ''}" onclick="showProtocolDetail('${protocol.id}')">
-                            <div class="applied-badge">Applied</div>
+                        <div class="marketplace-card" onclick="showProtocolDetail('${protocol.id}')">
                             <div class="protocol-card-header">
                                 <div>
                                     <div class="protocol-title">${protocol.title}</div>
@@ -761,7 +710,6 @@
             const protocol = ProtocolData.protocols.find(p => p.id === protocolId);
             const version = ProtocolData.versions.find(v => v.protocolId === protocolId);
             const match = ProtocolData.matchSitesToProtocol(protocolId).find(m => m.site.id === currentSiteId);
-            const isApplied = appliedProtocols.includes(protocolId);
 
             if (!protocol) return;
 
@@ -817,40 +765,16 @@
                     </div>
                 </div>
 
-                <button class="apply-button ${isApplied ? 'applied' : ''}" 
-                        onclick="expressInterest('${protocolId}')" 
-                        ${isApplied ? 'disabled' : ''}>
-                    ${isApplied ? 'Applied' : 'Express Interest'}
-                </button>
             `;
 
             document.getElementById('modalProtocolContent').innerHTML = content;
             document.getElementById('protocolDetailModal').classList.add('active');
         }
 
+        // Express interest functionality removed
         function expressInterest(protocolId) {
-            if (!appliedProtocols.includes(protocolId)) {
-                appliedProtocols.push(protocolId);
-                localStorage.setItem(`appliedProtocols_${currentSiteId}`, JSON.stringify(appliedProtocols));
-                
-                // Update UI
-                const button = event.target;
-                button.classList.add('applied');
-                button.textContent = 'Applied';
-                button.disabled = true;
-                
-                // Update marketplace card
-                const card = document.querySelector(`[onclick*="${protocolId}"]`);
-                if (card) {
-                    card.classList.add('applied');
-                }
-                
-                // Close modal after a moment
-                setTimeout(() => {
-                    closeProtocolModal();
-                    renderMarketplace();
-                }, 1000);
-            }
+            // Functionality removed
+            return;
         }
 
         function closeProtocolModal() {

@@ -53,6 +53,13 @@ body {
     color: var(--verily-primary);
     font-weight: 600;
     font-size: 1.1em;
+    text-decoration: none;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.nav-logo:hover {
+    opacity: 0.8;
 }
 
 .nav-title {

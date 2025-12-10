@@ -448,11 +448,190 @@
             color: var(--verily-secondary);
         }
 
-        /* Site Matching Styles */
-        .site-leaderboard {
+        /* Protocol Requirements Section */
+        .protocol-requirements-section {
+            background: white;
+            border: 1px solid var(--verily-border);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        .protocol-requirements-title {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: var(--verily-secondary);
+            margin-bottom: 16px;
+        }
+
+        .protocol-requirements-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 12px;
+        }
+
+        .protocol-requirement-item {
+            padding: 8px 12px;
+            background: var(--verily-neutral);
+            border-radius: 6px;
+            font-size: 0.9em;
+            color: var(--verily-text);
+            border-left: 3px solid var(--verily-primary);
+        }
+
+        /* Site Profile Modal Styles */
+        .site-profile-section {
+            margin-bottom: 32px;
+        }
+
+        .site-profile-section-title {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: var(--verily-secondary);
+            margin-bottom: 16px;
+        }
+
+        .site-profile-metrics {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .site-profile-metric {
+            background: var(--verily-neutral);
+            border-radius: 8px;
+            padding: 16px;
+        }
+
+        .site-profile-metric-label {
+            font-size: 0.85em;
+            color: #888;
+            margin-bottom: 8px;
+        }
+
+        .site-profile-metric-value {
+            font-size: 1.5em;
+            font-weight: 600;
+            color: var(--verily-secondary);
+        }
+
+        .site-profile-field {
+            margin-bottom: 20px;
+        }
+
+        .site-profile-label {
+            font-size: 0.9em;
+            font-weight: 600;
+            color: var(--verily-secondary);
+            margin-bottom: 8px;
+        }
+
+        .site-profile-value {
+            font-size: 1em;
+            color: var(--verily-text);
+        }
+
+        .site-profile-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .site-profile-tag {
+            padding: 6px 12px;
+            background: rgba(10, 122, 107, 0.1);
+            color: var(--verily-primary);
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: 500;
+        }
+
+        /* Protocol Detail Modal (matching site.html style) */
+        .protocol-detail-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .protocol-detail-modal.active {
+            display: flex;
+        }
+
+        .protocol-detail-content {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            max-width: 900px;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .match-explanation {
+            background: rgba(10, 122, 107, 0.05);
+            border-left: 4px solid var(--verily-primary);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 24px 0;
+        }
+
+        .match-explanation-title {
+            font-weight: 600;
+            color: var(--verily-secondary);
+            margin-bottom: 12px;
+        }
+
+        .match-reasons {
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 8px;
+        }
+
+        .match-reason {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .match-check {
+            color: var(--verily-success);
+            width: 20px;
+            height: 20px;
+        }
+
+        .match-reason-text {
+            color: var(--verily-text);
+        }
+
+        .capabilities-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .capability-tag {
+            padding: 6px 12px;
+            background: rgba(10, 122, 107, 0.1);
+            color: var(--verily-primary);
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: 500;
+        }
+
+        /* Site Matching Styles */
+        .site-leaderboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 24px;
         }
 
         .site-match-card {
@@ -460,22 +639,24 @@
             border: 1px solid var(--verily-border);
             border-radius: 12px;
             padding: 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            cursor: pointer;
             transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
         }
 
         .site-match-card:hover {
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+            transform: translateY(-2px);
         }
 
-        .site-match-info {
-            flex: 1;
+        .site-match-header {
+            margin-bottom: 16px;
         }
 
         .site-match-name {
-            font-size: 1.1em;
+            font-size: 1.2em;
             font-weight: 600;
             color: var(--verily-secondary);
             margin-bottom: 4px;
@@ -484,17 +665,26 @@
         .site-match-location {
             font-size: 0.9em;
             color: #888;
-            margin-bottom: 8px;
         }
 
         .site-match-details {
             font-size: 0.85em;
             color: var(--verily-text);
+            margin-bottom: 16px;
+        }
+
+        .site-match-missing {
+            font-size: 0.85em;
+            color: #888;
+            margin-top: 8px;
+            margin-bottom: 16px;
         }
 
         .site-match-score {
+            margin-top: auto;
+            padding-top: 16px;
+            border-top: 1px solid var(--verily-border);
             text-align: center;
-            margin-right: 24px;
         }
 
         .match-score-value {
@@ -737,7 +927,7 @@
     <!-- Navigation Bar -->
     <div class="detail-nav-bar">
         <div class="detail-nav-left">
-            <div class="nav-logo">verily</div>
+            <a href="index.html" class="nav-logo">verily</a>
             <div class="nav-title">Protocol Insights</div>
         </div>
         <div class="detail-nav-right">
@@ -781,7 +971,7 @@
     </div>
 
     <!-- Tabs -->
-    <div class="detail-tab-container">
+    <div class="detail-tab-container" id="detailTabContainer">
         <div class="detail-tabs">
             <button class="detail-tab active" onclick="switchDetailTab('overview')">Overview</button>
             <button class="detail-tab" onclick="switchDetailTab('matching')">Potential Sites</button>
@@ -866,7 +1056,7 @@
     </div>
 
     <!-- Avoidable Amendment Risk Section -->
-    <div class="metric-section">
+    <div class="metric-section" id="amendmentRiskSection">
         <div class="metric-section-header">
             <div class="metric-section-title">Avoidable Amendment Risk</div>
             <a href="#" class="view-drivers-link">View drivers in protocol ></a>
@@ -887,7 +1077,7 @@
     </div>
 
     <!-- Recommended Actions -->
-    <div class="recommended-actions">
+    <div class="recommended-actions" id="recommendedActionsSection">
         <div class="recommended-actions-header">
             <div class="recommended-actions-title" id="recommendedActionsTitle">Recommended Actions</div>
             <div class="action-navigation">
@@ -920,11 +1110,30 @@
     <!-- Potential Sites Tab -->
     <div class="detail-tab-content" id="matchingTab">
         <div class="protocols-section">
+            <div id="protocolRequirementsSection" style="display: none;">
+                <!-- Protocol requirements will be rendered here -->
+            </div>
             <div class="site-leaderboard" id="siteLeaderboard">
                 <!-- Site matches will be rendered here -->
             </div>
         </div>
     </div>
+
+    <!-- Site Profile Modal -->
+    <div class="modal" id="siteProfileModal">
+        <div class="modal-content" style="max-width: 800px; max-height: 90vh;">
+            <div class="modal-header">
+                <div class="modal-title" id="siteProfileModalTitle">Site Profile</div>
+                <svg class="modal-close" onclick="closeModal('siteProfileModal')" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                </svg>
+            </div>
+            <div id="siteProfileModalContent" style="overflow-y: auto; max-height: calc(90vh - 80px);">
+                <!-- Site profile content will be rendered here -->
+            </div>
+        </div>
+    </div>
+
 
     <!-- Upload Modal -->
     <div class="modal" id="uploadModal">
@@ -990,27 +1199,76 @@
         let currentActionPage = 0;
         const actionsPerPage = 2;
 
-        // Get protocol ID from URL
+        // Get protocol ID and view type from URL
         const urlParams = new URLSearchParams(window.location.search);
         const protocolId = urlParams.get('id');
+        const viewType = urlParams.get('view'); // 'network' if coming from network view
+        const isNetworkView = viewType === 'network';
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
             if (!protocolId) {
                 alert('No protocol ID provided');
-                window.location.href = 'sponsor.html';
+                window.location.href = isNetworkView ? 'network.html' : 'sponsor.html';
                 return;
             }
 
+            // Hide elements for network view
+            if (isNetworkView) {
+                // Hide action buttons (all buttons except user profile)
+                const navRight = document.querySelector('.detail-nav-right');
+                if (navRight) {
+                    const buttons = navRight.querySelectorAll('.btn-export');
+                    buttons.forEach(btn => btn.style.display = 'none');
+                }
+
+                // Hide amendment risk section
+                const amendmentSection = document.getElementById('amendmentRiskSection');
+                if (amendmentSection) amendmentSection.style.display = 'none';
+
+                // Hide recommended actions
+                const recommendedActions = document.getElementById('recommendedActionsSection');
+                if (recommendedActions) recommendedActions.style.display = 'none';
+
+                // Hide Version History tab (keep Overview and Potential Sites tabs visible)
+                const tabs = document.querySelectorAll('.detail-tab');
+                tabs.forEach(tab => {
+                    if (tab.textContent.trim() === 'Version History') {
+                        tab.style.display = 'none';
+                    }
+                });
+
+                // Update back link
+                const backLink = document.querySelector('.back-link');
+                if (backLink) {
+                    backLink.href = 'network.html';
+                    const span = backLink.querySelector('span');
+                    if (span) span.textContent = 'Back to Protocols';
+                }
+            }
+
             loadProtocol(protocolId);
-            setupUpload();
+            if (!isNetworkView) {
+                setupUpload();
+            }
+
+            // Set up site profile modal close on outside click
+            const siteModal = document.getElementById('siteProfileModal');
+            if (siteModal) {
+                siteModal.addEventListener('click', function(e) {
+                    if (e.target === siteModal) {
+                        closeModal('siteProfileModal');
+                    }
+                });
+            }
+
         });
 
         function loadProtocol(protocolId) {
             currentProtocol = ProtocolData.protocols.find(p => p.id === protocolId);
             if (!currentProtocol) {
                 alert('Protocol not found');
-                window.location.href = 'sponsor.html';
+                window.location.href = isNetworkView ? 'network.html' : 'sponsor.html';
                 return;
             }
 
@@ -1311,6 +1569,24 @@
         function renderSiteMatching() {
             if (!currentProtocol) return;
             
+            // Render protocol requirements
+            const requirementsSection = document.getElementById('protocolRequirementsSection');
+            if (requirementsSection && currentProtocol.requirements && currentProtocol.requirements.length > 0) {
+                requirementsSection.style.display = 'block';
+                requirementsSection.innerHTML = `
+                    <div class="protocol-requirements-section">
+                        <div class="protocol-requirements-title">Protocol Requirements</div>
+                        <div class="protocol-requirements-list">
+                            ${currentProtocol.requirements.map(req => 
+                                `<div class="protocol-requirement-item">${req}</div>`
+                            ).join('')}
+                        </div>
+                    </div>
+                `;
+            } else if (requirementsSection) {
+                requirementsSection.style.display = 'none';
+            }
+            
             const matches = ProtocolData.matchSitesToProtocol(currentProtocol.id);
             const container = document.getElementById('siteLeaderboard');
             
@@ -1319,24 +1595,161 @@
                 return;
             }
             
-            container.innerHTML = matches.map(match => `
-                <div class="site-match-card">
-                    <div class="site-match-info">
+            container.innerHTML = matches.map(match => {
+                // In sponsor view, open site profile modal. In network view, show site detail modal.
+                const onClickAction = isNetworkView 
+                    ? `showSiteDetail('${match.site.id}')`
+                    : `showSiteProfile('${match.site.id}')`;
+                
+                return `
+                <div class="site-match-card" onclick="${onClickAction}">
+                    <div class="site-match-header">
                         <div class="site-match-name">${match.site.name}</div>
                         <div class="site-match-location">${match.site.location}</div>
-                        <div class="site-match-details">${match.matchDetails}</div>
-                        ${match.missingCapabilities.length > 0 ? `
-                            <div class="site-match-details" style="margin-top: 8px; color: #888;">
-                                Missing: ${match.missingCapabilities.slice(0, 3).join(', ')}${match.missingCapabilities.length > 3 ? '...' : ''}
-                            </div>
-                        ` : ''}
                     </div>
+                    <div class="site-match-details">${match.matchDetails}</div>
+                    ${match.missingCapabilities.length > 0 ? `
+                        <div class="site-match-missing">
+                            Missing: ${match.missingCapabilities.slice(0, 3).join(', ')}${match.missingCapabilities.length > 3 ? '...' : ''}
+                        </div>
+                    ` : ''}
                     <div class="site-match-score">
                         <div class="match-score-value">${match.matchScore}%</div>
                         <div class="match-score-label">Match Score</div>
                     </div>
                 </div>
-            `).join('');
+            `;
+            }).join('');
+        }
+
+        function showSiteProfile(siteId) {
+            const site = ProtocolData.sites.find(s => s.id === siteId);
+            if (!site) {
+                alert('Site not found');
+                return;
+            }
+
+            // Get match information if we're in a protocol context
+            const match = currentProtocol ? 
+                ProtocolData.matchSitesToProtocol(currentProtocol.id).find(m => m.site.id === siteId) : 
+                null;
+
+            const modal = document.getElementById('siteProfileModal');
+            const modalTitle = document.getElementById('siteProfileModalTitle');
+            const modalContent = document.getElementById('siteProfileModalContent');
+
+            modalTitle.textContent = site.name;
+
+            const performance = site.pastPerformance || {};
+
+            // Build match explanation section if match exists
+            const matchExplanationHtml = match ? `
+                <div class="site-profile-section">
+                    <div class="site-profile-section-title">Why this site matched (${match.matchScore}%)</div>
+                    <div class="match-explanation" style="margin-top: 16px;">
+                        <div class="match-explanation-title" style="font-size: 0.9em; margin-bottom: 12px;">
+                            Matches ${match.matchingCapabilities.length} of ${currentProtocol.requirements.length} requirements
+                        </div>
+                        <div class="match-reasons">
+                            ${match.matchingCapabilities.slice(0, 5).map(cap => `
+                                <div class="match-reason">
+                                    <svg class="match-check" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                                    </svg>
+                                    <span class="match-reason-text">${cap}</span>
+                                </div>
+                            `).join('')}
+                            ${match.matchingCapabilities.length > 5 ? `
+                                <div class="match-reason-text" style="margin-top: 8px; color: #888;">
+                                    +${match.matchingCapabilities.length - 5} more matching capabilities
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+            ` : '';
+
+            // Build capabilities with matching highlighting if match exists
+            const capabilitiesHtml = (site.capabilities || []).map(cap => {
+                const isMatching = match && match.matchingCapabilities.includes(cap);
+                return `
+                    <span class="site-profile-tag ${isMatching ? '' : 'metric-high'}" 
+                          style="${isMatching ? '' : 'background: rgba(239, 68, 68, 0.1); color: var(--verily-danger);'}">
+                        ${cap}
+                    </span>
+                `;
+            }).join('');
+
+            // Build missing capabilities section if match exists and has missing capabilities
+            const missingCapabilitiesHtml = match && match.missingCapabilities.length > 0 ? `
+                <div class="site-profile-field">
+                    <div class="site-profile-label">Missing Capabilities</div>
+                    <div class="site-profile-tags">
+                        ${match.missingCapabilities.map(cap => 
+                            `<span class="site-profile-tag metric-high" style="background: rgba(239, 68, 68, 0.1); color: var(--verily-danger);">${cap}</span>`
+                        ).join('')}
+                    </div>
+                </div>
+            ` : '';
+
+            modalContent.innerHTML = `
+                <div class="site-profile-section">
+                    <div class="site-profile-section-title">Performance Metrics</div>
+                    <div class="site-profile-metrics">
+                        <div class="site-profile-metric">
+                            <div class="site-profile-metric-label">Enrollment Rate</div>
+                            <div class="site-profile-metric-value">${performance.enrollmentRate || 'N/A'}%</div>
+                        </div>
+                        <div class="site-profile-metric">
+                            <div class="site-profile-metric-label">Retention Rate</div>
+                            <div class="site-profile-metric-value">${performance.retentionRate || 'N/A'}%</div>
+                        </div>
+                        <div class="site-profile-metric">
+                            <div class="site-profile-metric-label">Protocol Compliance</div>
+                            <div class="site-profile-metric-value">${performance.protocolCompliance || 'N/A'}%</div>
+                        </div>
+                        <div class="site-profile-metric">
+                            <div class="site-profile-metric-label">Avg. Time to First Patient</div>
+                            <div class="site-profile-metric-value">${performance.averageTimeToFirstPatient || 'N/A'} days</div>
+                        </div>
+                    </div>
+                </div>
+
+                ${matchExplanationHtml}
+
+                <div class="site-profile-section">
+                    <div class="site-profile-field">
+                        <div class="site-profile-label">Site Name</div>
+                        <div class="site-profile-value">${site.name}</div>
+                    </div>
+                    <div class="site-profile-field">
+                        <div class="site-profile-label">Location</div>
+                        <div class="site-profile-value">${site.location}</div>
+                    </div>
+                    <div class="site-profile-field">
+                        <div class="site-profile-label">Specialties</div>
+                        <div class="site-profile-tags">
+                            ${(site.specialties || []).map(spec => 
+                                `<span class="site-profile-tag">${spec}</span>`
+                            ).join('')}
+                        </div>
+                    </div>
+                    <div class="site-profile-field">
+                        <div class="site-profile-label">Capabilities</div>
+                        <div class="site-profile-tags">
+                            ${capabilitiesHtml}
+                        </div>
+                    </div>
+                    ${missingCapabilitiesHtml}
+                </div>
+            `;
+
+            modal.classList.add('active');
+        }
+
+        // Use the same showSiteProfile function for both views
+        function showSiteDetail(siteId) {
+            showSiteProfile(siteId);
         }
 
         function showUploadModal() {
@@ -1346,6 +1759,10 @@
         function closeModal(modalId) {
             document.getElementById(modalId).classList.remove('active');
         }
+
+        // Make functions available globally
+        window.showSiteProfile = showSiteProfile;
+        window.showSiteDetail = showSiteDetail;
 
         function setupUpload() {
             const uploadArea = document.getElementById('uploadArea');
